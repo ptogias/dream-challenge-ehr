@@ -119,7 +119,7 @@ More Specifically:
 ##### ATC Ingredient Category
 Except from conditions, procedures and some other relevant observations, a patient’s drug exposure must be recorded in a way that is well understood and categorized. For this reason, we went with the ATC (Anatomical Therapeutic Chemical) classification system. Quoting the respective Wikipedia post:**[6]** “_ATC is a drug classification system that classifies the active ingredients of drugs according to the organ or system on which they act and their therapeutic, pharmacological and chemical properties. It is controlled by the World Health Organization Collaborating Centre for Drug Statistics Methodology (WHOCC) and was first published in 1976_”. Once we had a list of all 14 top-level classes, a further selection took place in order to retain those that were considered to have the most negative impact in a person’s health or were associated with high risk conditions.
 
-![alt text](http://url/to/img.png)
+![alt text](https://raw.githubusercontent.com/ptogias/dream-challenge-ehr/main/atc_classes.png)
 
 The Drug_exposure data follow the RxNorm vocabulary, which is formed using the active ingredient of a drug, its’ strength and dose form. Again, we performed a string search of the ingredients (following the categorization of ATC) in the RxNorm vocabulary. 
 

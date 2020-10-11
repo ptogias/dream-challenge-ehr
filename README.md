@@ -25,8 +25,8 @@ The objective of this challenge was to develop a method that uses curated EHR da
 Although a big number of submission models returned high AUROC scores (> 0.9), we are a bit skeptical about the correct prediction of both classes (mortality/no mortality-mortality after 180 days) because of the significant class imbalance that is present in the dataset. This left us wondering whether these high scores are in fact product of the correct prediction of the larger proportion of True Negatives (no mortality-mortality after 180 days) over the much less True Positives (mortality). Spaces such as the PR tend to be robust to these kind of issues, as they account only for the True Positive class, and give a more clear view regarding algorithm prediction performance.
 
 #### Methods
-In order to transform multiple individual patient records into a single entry for each person_id, we relied on features expected to have a negative impact in health and counted each recorded instance per patient. In addition, some demographics were also considered such as age, gender and race, while ethnicity was not included in the final model due to its’ high cardinality. In addition, we focused on Observations, to extract information related to the ability of a patient to pay his/her medical expenses. All concept vocabularies were downloaded though the OHDSI Athena database and an extensive search was performed in it in order to create the previously mentioned features considering the respective vocabulary for each table.
-Bellow we present each variable (46 in total) and its respective table of origin as well as the method used for engineering it:
+In order to transform multiple individual patient records into a single entry for each person_id, we relied on features expected to have a negative impact in health and counted each recorded instance per patient. In addition, some demographics were also considered such as age, gender and race, while ethnicity was not included in the final model due to its’ high cardinality. In addition, we focused on Observations, to extract information related to the ability of a patient to pay his/her medical expenses. All concept vocabularies were downloaded though the OHDSI Athena database and an extensive search was performed in it in order to create the previously mentioned features considering the respective vocabulary for each table.<br/>
+Bellow we present each variable (46 in total) and its respective table of origin as well as the method used for engineering it:<br/>
 
 | **Variable Name** | **Variable Description** | **Origin Table** | **Engineering Method** |
 | --- | --- | --- | --- |
@@ -83,8 +83,8 @@ _Variables regarding summations of each table per patient_
 | drug_exposure_days | Sum of recorded days of exposure to drugs per patient |
 
 ##### Matching String Search
-A string search in Athena database, containing terms of interest, in order to extract the respective concept ids and engineer each variable that falls under this category. For this procedure to obtain only useful information and exclude noise from entries implicating occurrences with no value but including the string of interest, restrictions were implemented where possible.  
-For example, this is the case of constructing the “cancermetastatic” variable by searching all SNOMED descriptions in Athena database:
+A string search in Athena database, containing terms of interest, in order to extract the respective concept ids and engineer each variable that falls under this category. For this procedure to obtain only useful information and exclude noise from entries implicating occurrences with no value but including the string of interest, restrictions were implemented where possible.<br/>
+For example, this is the case of constructing the “cancermetastatic” variable by searching all SNOMED descriptions in Athena database:<br/>
 
 
 ```
@@ -101,8 +101,8 @@ domain[domain_id == "Condition" &
 ```
 
 ##### Elixhauser comorbidity score
-Comorbidities proposed by Elixhauser et. al. **[4]** were considered here, because of their recent publication date in contrast with the Charlson comorbidity score **[3]**. Both scores were introduced with the ICD10 vocabulary, so we transformed them to SNOMED for them to be concise with the rest variables regarding conditions. Weights for the Elixhauser comorbidity score were calculated based on a variation of the AHRQ Algorithm **[5]** that we applied. In this specific scenario, we emphasized on conditions that are generally known to have a negative impact on a person’s health based on today’s medical standards and assigned them a weight based on the process described by AHRQ Algorithm. The weights for each person are then summed for a single score to be produced (0 the lowest score and 90 the highest score that a person can have). We chose to leave some scores as they were originally proposed in literature.
-More Specifically:
+Comorbidities proposed by Elixhauser et. al. **[4]** were considered here, because of their recent publication date in contrast with the Charlson comorbidity score **[3]**. Both scores were introduced with the ICD10 vocabulary, so we transformed them to SNOMED for them to be concise with the rest variables regarding conditions. Weights for the Elixhauser comorbidity score were calculated based on a variation of the AHRQ Algorithm **[5]** that we applied. In this specific scenario, we emphasized on conditions that are generally known to have a negative impact on a person’s health based on today’s medical standards and assigned them a weight based on the process described by AHRQ Algorithm. The weights for each person are then summed for a single score to be produced (0 the lowest score and 90 the highest score that a person can have). We chose to leave some scores as they were originally proposed in literature.<br/>
+More Specifically:<br/>
 
 | **Variable Name** | **Weight** |
 | --- | --- |
@@ -120,13 +120,13 @@ More Specifically:
 | fluidelectrolyte | 11 |
 
 ##### ATC Ingredient Category
-Except from conditions, procedures and some other relevant observations, a patient’s drug exposure must be recorded in a way that is well understood and categorized. For this reason, we went with the ATC (Anatomical Therapeutic Chemical) classification system. Quoting the respective Wikipedia post:**[6]** “_ATC is a drug classification system that classifies the active ingredients of drugs according to the organ or system on which they act and their therapeutic, pharmacological and chemical properties. It is controlled by the World Health Organization Collaborating Centre for Drug Statistics Methodology (WHOCC) and was first published in 1976_”. Once we had a list of all 14 top-level classes, a further selection took place in order to retain those that were considered to have the most negative impact in a person’s health or were associated with high risk conditions.
+Except from conditions, procedures and some other relevant observations, a patient’s drug exposure must be recorded in a way that is well understood and categorized. For this reason, we went with the ATC (Anatomical Therapeutic Chemical) classification system. Quoting the respective Wikipedia post:**[6]** “_ATC is a drug classification system that classifies the active ingredients of drugs according to the organ or system on which they act and their therapeutic, pharmacological and chemical properties. It is controlled by the World Health Organization Collaborating Centre for Drug Statistics Methodology (WHOCC) and was first published in 1976_”. Once we had a list of all 14 top-level classes, a further selection took place in order to retain those that were considered to have the most negative impact in a person’s health or were associated with high risk conditions.<br/>
 
 ![alt text](https://raw.githubusercontent.com/ptogias/dream-challenge-ehr/main/atc_classes.png)
 
-The Drug_exposure data follow the RxNorm vocabulary, which is formed using the active ingredient of a drug, its’ strength and dose form. Again, we performed a string search of the ingredients (following the categorization of ATC) in the RxNorm vocabulary. 
+The Drug_exposure data follow the RxNorm vocabulary, which is formed using the active ingredient of a drug, its’ strength and dose form. Again, we performed a string search of the ingredients (following the categorization of ATC) in the RxNorm vocabulary.<br/>
 
-For example, the search regarding the “radios” variable was conducted like this:
+For example, the search regarding the “radios” variable was conducted like this:<br/>
 
 ```
 domain[domain_id == "Drug" & 
@@ -136,7 +136,7 @@ domain[domain_id == "Drug" &
 ```
 
 ##### Other preprocessing steps
-Before moving into the training phase, we included a few more steps in our preprocessing pipeline. Here is a brief list of these matters:
+Before moving into the training phase, we included a few more steps in our preprocessing pipeline. Here is a brief list of these matters:<br/>
 
 -	“Obese”, “deathobservations” and gender variables were converted to Boolean (presence/absence)<br/>
 -	Boolean variable “unabletopay” was engineered through four other previously created variables indicating the recorded financial and insurance status of each patient (“finstatus_0”, “finstatus_1”, “insurance_0”, “insurance_1”). 1 suggesting that a patient has a record of not being able to pay medical expenses and 0 when a patient has a record of being able to pay<br/>
@@ -148,7 +148,7 @@ Before moving into the training phase, we included a few more steps in our prepr
 The same preprocessing steps were applied in both training and inferring sets.
 
 #### XGBOOST parameter tuning
-Two XGBOOST models were trained in our last submission in round 3 extention with the best one achieving an AUROC score = 0.9372. In order to test one more scenario regarding model parameter tuning, we decided, in our final submission in the evaluation phase, to add a third one and see how that goes later on.  For the selection of optimal nrounds, we separated again the existing training set to additional train / eval sets (93% / 7% respectively) based on the distribution of the target variable and used the new evaluation set for the selection of an optimal number of nrounds through XGBOOST's _watchlist_ feature.
+Two XGBOOST models were trained in our last submission in round 3 extention with the best one achieving an AUROC score = 0.9372. In order to test one more scenario regarding model parameter tuning, we decided, in our final submission in the evaluation phase, to add a third one and see how that goes later on.  For the selection of optimal nrounds, we separated again the existing training set to additional train / eval sets (93% / 7% respectively) based on the distribution of the target variable and used the new evaluation set for the selection of an optimal number of nrounds through XGBOOST's _watchlist_ feature.<br/>
 
 | **1st model (3ext)** | **2nd model (3ext)** | **3rd model (eval)** |
 |--- | --- |--- |
@@ -166,7 +166,7 @@ _Notes on parameter tuning_ :
 We tested _aucpr _ as the evaluation metric on other submissions but surprisingly it ended up giving slightly worse results.  _logloss _is also a robust evaluation metric when it comes to class imbalance but was not included in this work.
 
 #### Conclusion/Discussion
-As mentioned earlier, the problem of class imbalance was an issue in this challenge. In order to have a better understating of how models behave on balanced EHR data, downsampling the majority class should give a more clear feedback on the correct prediction of both classes. Nevertheless, this is a great opportunity to create solid ground for better future work.
+As mentioned earlier, the problem of class imbalance was an issue in this challenge. In order to have a better understating of how models behave on balanced EHR data, downsampling the majority class should give a more clear feedback on the correct prediction of both classes. Nevertheless, this is a great opportunity to create solid ground for better future work.<br/>
 Our approach emphasized more on a feature engineering perspective of patient morality prediction. Having a look at the AUROC and AUPR scores of other participants higher on the leaderboard, made us consider whether we missed something when engineering variables. Maybe an even more extensive search for variables may be appropriate in future analyses or other features that were not included in this challenge are the key for better results. Another aspect that should be investigated is the new version (v6.0) of OMOP Common Data Model that offers a few updates on tables and variables.
 
 Some final remarks:

@@ -2,10 +2,9 @@
 
 ![alt text](https://raw.githubusercontent.com/ptogias/dream-challenge-ehr/main/DREAM_Banner_v2-01.jpg)
 
-Team: moore
-
 ### Predicting patient mortality within 180 days after their last hospital visit based on Electronic Health Record data
 
+Team: moore<br/>
 Panagiotis Togias, Maria-Theodora Pandi
 
 
